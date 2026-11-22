@@ -33,6 +33,27 @@ jobs:
           echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
           echo "Project directory: $PROJECT_DIR"
 
+      - name: Fix Kotlin string
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path("extracted/TouchPulsePressure-alt-src-v3/app/src/main/java/com/custom/touchpulse/alt/MainActivity.kt")
+          s = p.read_text(encoding="utf-8")
+
+          old = '''"Шкала: 1.0 — %.1f | Сила: %.0f%%
+          X: %.2fx | Y: %.2fx | Шаг: %.0f px",'''
+
+          new = '"Шкала: 1.0 — %.1f | Сила: %.0f%%\\nX: %.2fx | Y: %.2fx | Шаг: %.0f px",'
+
+          if old not in s:
+              raise SystemExit("Ожидаемый ошибочный текст не найден!")
+
+          p.write_text(s.replace(old, new, 1), encoding="utf-8")
+          print("Kotlin string successfully fixed")
+
+          PY
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -43,10 +64,6 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.11.1"
-
-      - name: Show Kotlin error lines
-        run: |
-          nl -ba "$PROJECT_DIR/app/src/main/java/com/custom/touchpulse/alt/MainActivity.kt" | sed -n '135,155p'
 
       - name: Build APK
         run: |
