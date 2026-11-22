@@ -1,6 +1,8 @@
 
 name: Build TouchPulse APK
-
+      - name: Show Kotlin error lines
+        run: |
+          nl -ba "$PROJECT_DIR/app/src/main/java/com/custom/touchpulse/alt/MainActivity.kt" | sed -n '135,155p'
 on:
   workflow_dispatch:
   push:
