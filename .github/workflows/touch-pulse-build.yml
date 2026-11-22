@@ -1,8 +1,6 @@
 
 name: Build TouchPulse APK
-      - name: Show Kotlin error lines
-        run: |
-          nl -ba "$PROJECT_DIR/app/src/main/java/com/custom/touchpulse/alt/MainActivity.kt" | sed -n '135,155p'
+
 on:
   workflow_dispatch:
   push:
@@ -45,6 +43,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: "8.11.1"
+
+      - name: Show Kotlin error lines
+        run: |
+          nl -ba "$PROJECT_DIR/app/src/main/java/com/custom/touchpulse/alt/MainActivity.kt" | sed -n '135,155p'
 
       - name: Build APK
         run: |
